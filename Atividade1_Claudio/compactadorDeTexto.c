@@ -9,7 +9,7 @@ typedef struct {
 
 typedef struct {
     int quantidade;
-    Palavra palavras[1000000];
+    Palavra palavras[50000];
     int inicio;
 } Lista;
 
@@ -95,7 +95,7 @@ int comparadorDePalavras(const char* palavra) {
     return -1;
 }
 int gerarArquivoCompacto(FILE* fp) {
-    FILE* fb = lerArquivo("bibliaCompactada.txt", "w+");
+    FILE* fb = lerArquivo("arquivoCompactado.txt", "w+");
 
     rewind(fp);
 
@@ -141,20 +141,60 @@ void traducaoTexto(FILE* fp) {
     }
 }
 
-void main() {
-    char nomeArquivo[50];
+void gerarListaHash(FILE* fp) {
+    for (int i = 0; i < lista.quantidade; i++) {
+        fprintf(fp, "\t%d \t| \t%s\n", i, lista.palavras[i].palavra);
+    }
+    fflush(fp);
+}
+
+char* maiorPalavra() {
+    int maiorValor = 0;
+    int maiorIndice;
+
+    for (int i = 0; i < lista.quantidade; i++) {
+        if (lista.palavras[i].contagem > maiorValor){
+            maiorValor = lista.palavras[i].contagem;
+            maiorIndice = i;
+        }
+    }
+
+    return lista.palavras[maiorIndice].palavra;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        printf("Erro: VOCÊ ESQUECEU DE COLOCAR OS ARGUMENTOS KKKK\n");
+        return 1;
+    }
 
     lista.quantidade = 0;
-    FILE* fp = lerArquivo("biblia.txt", "r");
+
+    FILE* fp = lerArquivo(argv[1], "r");
+
+    if (fp == NULL) {
+        return 1;
+    }
+
     leitorDePalavras(fp);
     rewind(fp);
     gerarArquivoCompacto(fp);
 
-    rewind(fp);
-    FILE* fb = lerArquivo("bibliaCompactada.txt", "r");
+    /*
+    FILE* fb = lerArquivo("arquivoCompactado.txt", "r");
+    if (fb != NULL) {
+        traducaoTexto(fb);
+        fclose(fb);
+    }
 
-    traducaoTexto(fb);
+    */
+
+    FILE* hashtable = lerArquivo("hashtable.txt", "w+");
+    if (hashtable != NULL) {
+        gerarListaHash(hashtable);
+        fclose(hashtable);
+    }
 
     fclose(fp);
-    fclose(fb);
+    return 0;
 }
