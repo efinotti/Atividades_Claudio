@@ -29,6 +29,19 @@ unsigned char disco[QUANT_BLOCOS][TAMANHO_BLOCOS];
 
 Diretorio diretorio;
 
+void reescreverTexto(Arquivo arquivo) {
+    int indiceInicial = arquivo.primeiro_bloco;
+    int indiceAtual = indiceInicial;
+
+    while (indiceAtual != -1) {
+        for (int i = 0; i < TAMANHO_BLOCOS; i++) {
+            printf("%c", disco[indiceAtual][i]);
+        }
+
+        indiceAtual = FAT[indiceAtual];
+    }
+}
+
 /* Faço a declaração dessas duas funções, por que são recursivas e estavam dando
  problema, por não existirem uma pra outra.*/
 void verificarFAT(FILE* fp, Arquivo* arquivo, int tamanho, int primeiro,
@@ -146,5 +159,7 @@ int main() {
 
     Arquivo cap1 =
         criarArquivoDigital("arquivos/CAP1_OnePiece.txt", "CapituloUm");
+
+    reescreverTexto(cap1);
     return 1;
 }
