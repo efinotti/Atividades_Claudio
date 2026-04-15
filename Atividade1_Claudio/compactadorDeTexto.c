@@ -2,11 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Gero uma struct Palavra que vai ser a base para o HashMAP e comparação entre
+   Strings*/
 typedef struct {
     char palavra[50];
     int contagem;
 } Palavra;
 
+/* A lista terá um array de palavras, quantidade de palavras na lista, e quando
+ * começa essa lista*/
 typedef struct {
     int quantidade;
     Palavra palavras[50000];
@@ -15,6 +19,7 @@ typedef struct {
 
 Lista lista;
 
+// Entrada: Caminho/Rota do Arquivo
 FILE* criarArquivo(const char* nomeArquivo) {
     FILE* fp = fopen(nomeArquivo, "w+");
     if (fp != NULL) {
@@ -23,8 +28,9 @@ FILE* criarArquivo(const char* nomeArquivo) {
     } else {
         printf("Arquivo não conseguiu ser aberto!\n");
     }
-}
+}  // Saída de Arquivo com Método de Escrever
 
+// Entrada: NomeArquivo
 FILE* lerArquivo(const char* nomeArquivo, const char* tipoAbertura) {
     FILE* fp = fopen(nomeArquivo, tipoAbertura);
     if (fp != NULL) {
@@ -34,8 +40,9 @@ FILE* lerArquivo(const char* nomeArquivo, const char* tipoAbertura) {
         printf("Arquivo não conseguiu ser aberto!\n");
         return NULL;
     }
-}
+}  // Saída de Arquivo com Método deLeitura
 
+// Entrada: String[50] caracteres enviado por leitorDePalavras()
 void adicionarLista(char string[50]) {
     int contador = 0;
     while (lista.quantidade > contador) {
@@ -49,8 +56,9 @@ void adicionarLista(char string[50]) {
     strcpy(lista.palavras[lista.quantidade].palavra, string);
     lista.palavras[lista.quantidade].contagem = 1;
     lista.quantidade++;
-}
+}  // Saída: Adicionando registro Palavra na lista
 
+// Entrada: Arquivo
 void leitorDePalavras(FILE* fp) {
     char varControle;
     char buffer[50];
@@ -83,8 +91,9 @@ void leitorDePalavras(FILE* fp) {
         buffer[contador] = '\0';
         adicionarLista(buffer);
     }
-}
+}  // Saída: Palavras separadas e formatadas, enviadas para adicionarLista()
 
+// Entrada: Array Varíavel de Palavras
 int comparadorDePalavras(const char* palavra) {
     for (int i = 0; i < lista.quantidade; i++) {
         if (strcmp(palavra, lista.palavras[i].palavra) == 0) {
@@ -93,7 +102,9 @@ int comparadorDePalavras(const char* palavra) {
     }
 
     return -1;
-}
+}  // Saída: Valor 1 (V) ou 0(F) para comparação entre Strings
+
+// Entrada: Arquivo
 int gerarArquivoCompacto(FILE* fp) {
     FILE* fb = lerArquivo("arquivoCompactado.txt", "w+");
 
@@ -132,36 +143,46 @@ int gerarArquivoCompacto(FILE* fp) {
     }
 
     return 1;
-}
+}  // Retorna um novo arquivo escrito com números ao invés de palavras
 
+// Entrada: Arquivo
 void traducaoTexto(FILE* fp) {
     int indice;
     while (fscanf(fp, "%d ", &indice) != EOF) {
         printf("%s ", lista.palavras[indice].palavra);
     }
-}
+}  // Saída: Retorna a tradução de cada palavra no terminal
 
+
+//  Entrada: Arquivo
 void gerarListaHash(FILE* fp) {
     for (int i = 0; i < lista.quantidade; i++) {
         fprintf(fp, "\t%d \t| \t%s\n", i, lista.palavras[i].palavra);
     }
     fflush(fp);
-}
+} /*Saída:  Retorna uma lista HASH em um arquivo, caso o usuário queira verificar
+    integridade*/
 
+
+// Entrada: Valores já colocados na lista
 char* maiorPalavra() {
     int maiorValor = 0;
     int maiorIndice;
 
     for (int i = 0; i < lista.quantidade; i++) {
-        if (lista.palavras[i].contagem > maiorValor){
+        if (lista.palavras[i].contagem > maiorValor) {
             maiorValor = lista.palavras[i].contagem;
             maiorIndice = i;
         }
     }
 
     return lista.palavras[maiorIndice].palavra;
-}
+} // Saída: String mais falada
 
+
+
+
+// Entrada: Argumento que espera o caminho para o arquivo
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         printf("Erro: VOCÊ ESQUECEU DE COLOCAR OS ARGUMENTOS KKKK\n");
